@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+litellm = "^1.40.6"
 
 
 [build-system]
