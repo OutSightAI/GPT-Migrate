@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "gpt-migrate"
+version = "0.1.0"
+description = "AI Powered Legacy Code Migration"
+authors = ["OutSightAI"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
