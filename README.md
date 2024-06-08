@@ -52,3 +52,24 @@ poetry shell
 ```
 
 </details>
+
+
+<details>
+  <summary>For Development</summary>
+  
+  ### Linting and Formatting
+
+  To ensure code consistency and quality, we recommend using linting and formatting tools.
+
+  - **Black**: Black is a code formatter that automatically formats Python code to adhere to the PEP 8 style guide.
+    ```sh
+    poetry run black .
+    ```
+
+  - **flake8**: flake8 is a Python linter that checks your code against coding standards and identifies potential errors or style issues.
+    ```sh
+    poetry run flake8 .
+    ```
+
+  Run these commands in your terminal within the project directory to lint and format your code.
+</details>
