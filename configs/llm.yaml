@@ -1,0 +1,8 @@
+gpt-3.5-turbo: 
+  api: openai
+  type: completion
+
+gpt-4o: 
+  api: openai 
+  type: completion
+
