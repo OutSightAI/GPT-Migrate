@@ -9,6 +9,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 langchain-openai = "^0.1.8"
+langgraph = "^0.0.69"
+grandalf = "^0.8"
 
 
 [build-system]

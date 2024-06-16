@@ -164,6 +164,23 @@ files = [
 ]
 
 [[package]]
+name = "grandalf"
+version = "0.8"
+description = "Graph and drawing algorithms framework"
+optional = false
+python-versions = "*"
+files = [
+    {file = "grandalf-0.8-py3-none-any.whl", hash = "sha256:793ca254442f4a79252ea9ff1ab998e852c1e071b863593e5383afee906b4185"},
+    {file = "grandalf-0.8.tar.gz", hash = "sha256:2813f7aab87f0d20f334a3162ccfbcbf085977134a17a5b516940a93a77ea974"},
+]
+
+[package.dependencies]
+pyparsing = "*"
+
+[package.extras]
+full = ["numpy", "ply"]
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -257,13 +274,13 @@ files = [
 
 [[package]]
 name = "langchain-core"
-version = "0.2.6"
+version = "0.2.7"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "langchain_core-0.2.6-py3-none-any.whl", hash = "sha256:90521c9fc95d8f925e0d2e2d952382676aea6d3f8de611eda1b1810874c31e5d"},
-    {file = "langchain_core-0.2.6.tar.gz", hash = "sha256:9f0e38da722a558a6e95b6d86de01bd92e84558c47ac8ba599f02eab70a1c873"},
+    {file = "langchain_core-0.2.7-py3-none-any.whl", hash = "sha256:fd02e153c898486dd728d634684ffc64bc257ff2ba443dc7e53d017ac0bf4658"},
+    {file = "langchain_core-0.2.7.tar.gz", hash = "sha256:b0b1b6dfbdedb39426fcb8bd3f07e40eec7964856e3fc384c420ca6dba61b34e"},
 ]
 
 [package.dependencies]
@@ -289,6 +306,20 @@ files = [
 langchain-core = ">=0.2.2,<0.3"
 openai = ">=1.26.0,<2.0.0"
 tiktoken = ">=0.7,<1"
+
+[[package]]
+name = "langgraph"
+version = "0.0.69"
+description = "langgraph"
+optional = false
+python-versions = "<4.0,>=3.9.0"
+files = [
+    {file = "langgraph-0.0.69-py3-none-any.whl", hash = "sha256:7eb628b25ed75d717c9521d98f147424df7dbd04cf0f12bfcf2b5c3122b04137"},
+    {file = "langgraph-0.0.69.tar.gz", hash = "sha256:25391195461e66783811f29dff34f071af8f3302382b80ac2fb524c12f0bc1f2"},
+]
+
+[package.dependencies]
+langchain-core = ">=0.2,<0.3"
 
 [[package]]
 name = "langsmith"
@@ -504,6 +535,20 @@ files = [
 
 [package.dependencies]
 typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
+
+[[package]]
+name = "pyparsing"
+version = "3.1.2"
+description = "pyparsing module - Classes and methods to define and execute parsing grammars"
+optional = false
+python-versions = ">=3.6.8"
+files = [
+    {file = "pyparsing-3.1.2-py3-none-any.whl", hash = "sha256:f9db75911801ed778fe61bb643079ff86601aca99fcae6345aa67292038fb742"},
+    {file = "pyparsing-3.1.2.tar.gz", hash = "sha256:a1bac0ce561155ecc3ed78ca94d3c9378656ad4c94c1270de543f621420f94ad"},
+]
+
+[package.extras]
+diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pyyaml"
@@ -803,4 +848,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9566b2d410043fc35ccafc2423c2d3af5194c3d5adfccc9f2a766df5cf9c509e"
+content-hash = "49035ef41caacb54680dfdc7ce7134ea09b1941d9a1f10b83a6c1de43603fce5"

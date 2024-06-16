@@ -1,10 +1,9 @@
 from abc import abstractmethod
-import os
 
 
 class Agent: 
     def __init__(self, model, tools):
-        self.tools {t.name: t for t in tools}
+        self.tools = {t.name: t for t in tools}
         self.model = model.bind_tools(tools)
     
     @abstractmethod
@@ -12,4 +11,5 @@ class Agent:
         """
         This method should call the agent graph in the derived agent classes
         """
+
         
