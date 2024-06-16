@@ -17,7 +17,6 @@ def main(arguments):
         config_yaml = yaml.safe_load(fp) 
     cfg = Config(config_yaml)
     model = get_llm(cfg.migrate.model)
-    import pdb;pdb.set_trace()
-
+    
 if __name__ == "__main__":
     main(sys.argv[1:])
