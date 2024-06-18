@@ -4,7 +4,9 @@ import os
 
 
 path_cfg_keys = []
-class Config():
+
+
+class Config:
     def __init__(self, data):
         for name, value in data.items():
             if name in path_cfg_keys and value is not None:
@@ -25,12 +27,13 @@ class Config():
         def _str(data, indent=0):
             if isinstance(data, Config):
                 data = data.__dict__
-            out = ''
+            out = ""
             for name, value in data.items():
                 if isinstance(value, Config):
-                    out += '  ' * indent + f'{name}:\n'
-                    out += _str(value, indent=indent+1)
+                    out += "  " * indent + f"{name}:\n"
+                    out += _str(value, indent=indent + 1)
                 else:
-                    out += '  ' * indent + f'{name}: {value}\n'
+                    out += "  " * indent + f"{name}: {value}\n"
             return out
+
         return _str(self)

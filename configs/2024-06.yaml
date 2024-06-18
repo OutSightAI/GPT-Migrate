@@ -1,3 +1,5 @@
+entry_path: <ENTRY_PATH>
+
 document: 
   model: 
     name: gpt-3.5-turbo
