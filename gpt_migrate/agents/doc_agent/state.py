@@ -11,3 +11,6 @@ class DocAgentState(AgentState):
     items_to_process: List[str]
     directory_structure: str
     directory_stack: List[Dict[str, Any]]
+    legacy_language: str
+    legacy_framework: str
+    indent: str

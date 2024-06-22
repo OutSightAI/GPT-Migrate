@@ -21,6 +21,10 @@ def main(arguments):
     model = get_llm(cfg.migrate.model)
 
     entry_path = cfg.entry_path
+    output_path = cfg.output_path
+
+    legacy_language = cfg.legacy_language
+    legacy_framework = cfg.legacy_framework
 
     doc_agent = DocAgent(model, [])
     doc_agent(
@@ -28,6 +32,11 @@ def main(arguments):
             "entry_path": entry_path,
             "ignore_list": read_gitignore(entry_path),
             "directory_stack": [{"path": entry_path, "count": -1}],
+            "output_path": output_path,
+            "lagecy_language": legacy_language,
+            "lagecy_framework": legacy_framework,
+            "directory_structure": "",
+            "indent": "",
         }
     )
 

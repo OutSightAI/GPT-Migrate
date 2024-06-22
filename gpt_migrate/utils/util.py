@@ -3,7 +3,7 @@ import fnmatch
 
 
 def read_gitignore(path):
-    gitignore_path = os.path.join(path, ".gitignore")
+    gitignore_path = os.path.join(path, ".gptignore")
     patterns = []
     if os.path.exists(gitignore_path):
         with open(gitignore_path, "r") as file:

@@ -3,8 +3,11 @@ from abc import abstractmethod
 
 class Agent:
     def __init__(self, model, tools):
-        self.tools = {t.name: t for t in tools}
-        self.model = model.bind_tools(tools)
+        if tools is not None and len(tools) != 0:
+            self.tools = {t.name: t for t in tools}
+            self.model = model.bind_tools(tools)
+        else:
+            self.model = model
 
     @abstractmethod
     def __call__(**kwargs):

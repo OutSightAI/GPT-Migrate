@@ -1,4 +1,8 @@
-entry_path: <ENTRY_PATH>
+entry_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin"
+output_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin.gpt"
+
+legacy_language: node.js
+legacy_framework: express.js
 
 document: 
   model: 
