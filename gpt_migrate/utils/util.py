@@ -1,5 +1,6 @@
 import os
 import fnmatch
+import re
 
 
 def read_gitignore(path):
@@ -19,3 +20,14 @@ def is_ignored(entry_path, gitignore_patterns):
         if fnmatch.fnmatch(entry_path, pattern):
             return True
     return False
+
+
+def parse_code_string(code_string):
+
+    pattern = re.compile(r'```(.+?)\n(.*?)\n```', re.DOTALL)
+
+    match = pattern.match(code_string)
+    if match:
+        _, code = match.groups()
+        return code
+    return code_string

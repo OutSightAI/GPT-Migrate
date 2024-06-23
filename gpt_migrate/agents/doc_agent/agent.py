@@ -1,7 +1,7 @@
 import os
 from gpt_migrate.agents.agent import Agent
 from langgraph.graph import StateGraph, END
-from gpt_migrate.utils.util import is_ignored
+from gpt_migrate.utils.util import is_ignored, parse_code_string
 from gpt_migrate.agents.doc_agent.state import DocAgentState
 from gpt_migrate.agents.doc_agent.prompts import PROMPT, PROMPT_SUMMARY
 
@@ -69,11 +69,13 @@ class DocAgent(Agent):
         if (
             state["current_path"] is None
             and state["directory_stack"][-1]["count"] == -1
+        ) or (
+            state["current_path"] is None
+            and state["directory_stack"][-1]["count"] == 0
+            and len(state["directory_stack"]) == 1
         ):
             return "readme_creator"
         else:
-            import pdb
-            pdb.set_trace()
             return "end"
 
     def should_continue(self, state: DocAgentState):
@@ -150,6 +152,7 @@ class DocAgent(Agent):
     def document_file_node(self, state: DocAgentState):
         # TODO: Invoke the model to document the file.
         code_file = None
+        message = None
         with open(
                 os.path.join(state["directory_stack"][-1]["path"], state[
                     "current_path"
@@ -160,9 +163,14 @@ class DocAgent(Agent):
             find(
                 state["entry_path"]
             )
+
         relative_path = state["directory_stack"][-1]["path"][
             start_pos + len(state["entry_path"]):
         ]
+        if relative_path is not None and len(relative_path) > 0:
+            if relative_path[0] == '/':
+                relative_path = relative_path[1:]
+
         output_path = os.path.join(state["output_path"], relative_path)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
@@ -170,11 +178,13 @@ class DocAgent(Agent):
             os.path.join(
                 output_path,
                 state["current_path"])):
-            doc_commented_code_file = self.doc_chain.invoke({
-                "language": state["legacy_language"],
-                "framework": state["legacy_framework"],
-                "code_file": code_file
-            }).content
+            doc_commented_code_file = parse_code_string(
+                self.doc_chain.invoke({
+                    "language": state["legacy_language"],
+                    "framework": state["legacy_framework"],
+                    "code_file": code_file
+                }).content
+            )
 
             try:
                 with open(
@@ -195,11 +205,27 @@ class DocAgent(Agent):
             # pass doc_commented_code_file to the model again with the
             # summary chain to create a summary of the file and write the
             # summary along with the path to the messages in state
+            code_file_summary = self.summary_chain.invoke({
+                "language": state["legacy_language"],
+                "framework": state["legacy_framework"],
+                "code_file": doc_commented_code_file
+            })
+            code_file_summary.additional_kwargs["directory_path"] = \
+                state["directory_stack"][-1]["path"]
+            code_file_summary.additional_kwargs["file_name"] = \
+                state["current_path"]
+            message = code_file_summary
 
         prefix = '├── ' if state["directory_stack"][-1]["count"] > 0 \
             else '└── '
         state["directory_structure"] = state["directory_structure"] + \
             state["indent"] + prefix + state["current_path"] + "\n"
+
+        if message is not None:
+            return {
+                "directory_structure": state["directory_structure"],
+                "messages": [message]
+            }
 
         return {
             "directory_structure": state["directory_structure"],

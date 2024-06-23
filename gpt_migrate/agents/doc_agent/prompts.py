@@ -22,6 +22,12 @@ HUMAN_PROMPT = """ Here is the code file that need to be documented: \n\n
 {code_file}
 """
 
+#  NOTE: You are only
+#  responsible to add doc and inline comments, you can not change even a single
+#  line of code. Please make sure you do not change or comment out any line of
+#  code. Given the sensitive nature of the  task make sure you understand this.
+#  Otherwise severe penalties are going to be imposed upon us by customers.
+
 PROMPT = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT),
     ("human", HUMAN_PROMPT)
