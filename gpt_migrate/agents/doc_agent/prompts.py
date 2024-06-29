@@ -59,3 +59,26 @@ PROMPT_SUMMARY = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_PROMPT_SUMMARY),
     ("human", HUMAN_PROMPT_SUMMARY)
 ])
+
+
+SYSTEM_PROMPT_README = """You are playing the role of senior Google.
+ As senior engineer at Google, you are an expert at managing the large codebase
+ with proper documentation. Your personal goal is to manage large codebase
+ such that it is easy to understand and maintain for anyone who reads it. It
+ should be documented in such a way that anyone can get started quickly and
+ develop new features. \n\n
+ Current Task: Given the list of file/module names along with the short
+ summary of the file/module, you need to create a README.md file for the
+ directory. The README.md file should clear and concise to give the
+ understanding about directory/module in the codebase. The README.md file
+ should be easy to read and understand. \n\n"""
+HUMAN_PROMPT_README = """ Here is the list of file/module names along with
+ the short summary of the file/module: \n\n
+{file_module_summaries}
+\n\n Current directory/module name is:
+{module_name}
+"""
+PROMPT_README = ChatPromptTemplate.from_messages([
+    ("system", SYSTEM_PROMPT_README),
+    ("human", HUMAN_PROMPT_README)
+])

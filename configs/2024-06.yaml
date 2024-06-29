@@ -1,7 +1,7 @@
 entry_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin"
 output_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin.gpt"
 
-legacy_language: node.js
+legacy_language: nodeJs
 legacy_framework: express.js
 
 document: 

@@ -31,3 +31,15 @@ def parse_code_string(code_string):
         _, code = match.groups()
         return code
     return code_string
+
+
+def get_relative_path(path, entry_path):
+    start_pos = path.find(entry_path)
+    relative_path = path[
+            start_pos + len(entry_path):
+    ]
+    if relative_path is not None and len(relative_path) > 0:
+        if relative_path[0] == '/':
+            relative_path = relative_path[1:]
+
+    return relative_path

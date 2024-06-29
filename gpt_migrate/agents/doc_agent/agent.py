@@ -1,9 +1,17 @@
 import os
 from gpt_migrate.agents.agent import Agent
 from langgraph.graph import StateGraph, END
-from gpt_migrate.utils.util import is_ignored, parse_code_string
 from gpt_migrate.agents.doc_agent.state import DocAgentState
-from gpt_migrate.agents.doc_agent.prompts import PROMPT, PROMPT_SUMMARY
+from gpt_migrate.utils.util import (
+    is_ignored,
+    parse_code_string,
+    get_relative_path
+)
+from gpt_migrate.agents.doc_agent.prompts import (
+    PROMPT,
+    PROMPT_SUMMARY,
+    PROMPT_README
+)
 
 
 class DocAgent(Agent):
@@ -11,6 +19,8 @@ class DocAgent(Agent):
         super().__init__(model, tools)
         self.doc_chain = PROMPT | self.model
         self.summary_chain = PROMPT_SUMMARY | self.model
+        self.readme_chain = PROMPT_README | self.model
+
         # creating Agent graph
         graph = StateGraph(DocAgentState)
 
@@ -73,13 +83,16 @@ class DocAgent(Agent):
             state["current_path"] is None
             and state["directory_stack"][-1]["count"] == 0
             and len(state["directory_stack"]) == 1
-        ):
+        ) or (state["current_path"] is None
+                and state["directory_stack"][-1]["count"] == 0
+                and len(state["items_to_process"]) == 0):
             return "readme_creator"
         else:
             return "end"
 
     def should_continue(self, state: DocAgentState):
-        if state["items_to_process"] is not None:
+        if state["items_to_process"] is not None and \
+                len(state["directory_stack"]) != 0:
             return "start"
         else:
             return "end"
@@ -159,17 +172,11 @@ class DocAgent(Agent):
                 ]), "r",
         ) as f:
             code_file = f.read()
-        start_pos = state["directory_stack"][-1]["path"]. \
-            find(
-                state["entry_path"]
-            )
 
-        relative_path = state["directory_stack"][-1]["path"][
-            start_pos + len(state["entry_path"]):
-        ]
-        if relative_path is not None and len(relative_path) > 0:
-            if relative_path[0] == '/':
-                relative_path = relative_path[1:]
+        relative_path = get_relative_path(
+            state["directory_stack"][-1]["path"],
+            state["entry_path"]
+        )
 
         output_path = os.path.join(state["output_path"], relative_path)
         if not os.path.exists(output_path):
@@ -233,11 +240,61 @@ class DocAgent(Agent):
 
     def readme_creator_node(self, state: DocAgentState):
         # Pop the last directory from the stack
-        state["directory_stack"].pop(-1)
+        directory_path = state["directory_stack"].pop(-1)["path"]
 
         # write this README.md in the output_path and add
         # the contents of README.md to the messages in state
         # with the path in the last position in the directory_stack
         # in state
-        import pdb
-        pdb.set_trace()
+        relative_path = get_relative_path(directory_path, state["entry_path"])
+        output_directory_path = os.path.join(
+                state["output_path"],
+                relative_path
+        )
+
+        readme_file_path = os.path.join(
+            output_directory_path,
+            "README.md"
+        )
+
+        # Generate the summaries and filter out the messages simultaneously
+        file_or_module_summaries = [
+            message.additional_kwargs["file_name"] +
+            ':' + message.content + '\n\n'
+            for message in state["messages"]
+            if message.additional_kwargs["directory_path"] == directory_path
+        ]
+
+        file_or_module_summaries = '\n\n'.join(file_or_module_summaries)
+
+        readme = self.readme_chain.invoke({
+            "file_module_summaries": file_or_module_summaries,
+            "module_name": os.path.basename(relative_path)
+        })
+
+        try:
+            with open(readme_file_path, "w") as f:
+                f.write(readme.content)
+        except IOError:
+            print(f"Error writing README file at {readme_file_path}")
+
+        # Filter the messages to exclude those that have been processed
+        state["messages"] = [
+            message for message in state["messages"]
+            if message.additional_kwargs["directory_path"] !=
+            directory_path
+        ]
+
+        # Add the README.md path and content to the messages
+        if len(state["directory_stack"]) > 0:
+            readme.additional_kwargs["directory_path"] = \
+                state["directory_stack"][-1]["path"]
+            readme.additional_kwargs["file_name"] = \
+                os.path.basename(directory_path)
+        else:
+            readme.additional_kwargs["directory_path"] = state["entry_path"]
+            readme.additional_kwargs["file_name"] = "README.md"
+
+        return {
+            "messages": [readme]
+        }
