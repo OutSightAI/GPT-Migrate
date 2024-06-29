@@ -1,5 +1,6 @@
-entry_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin"
-output_path: "/mnt/c/Users/amangokrani/OneDrive - Microsoft/Personal/mern-admin.gpt"
+# Enter the directory path for the project you want to migrate and the output directory path
+entry_path: 
+output_path: 
 
 legacy_language: nodeJs
 legacy_framework: express.js
