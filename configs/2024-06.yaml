@@ -1,6 +1,6 @@
 # Enter the directory path for the project you want to migrate and the output directory path
-entry_path: 
-output_path: 
+entry_path: "/home/rohan/Home/mern-admin"
+output_path: "/home/rohan/Home/mern-admin.gpt"
 
 legacy_language: nodeJs
 legacy_framework: express.js

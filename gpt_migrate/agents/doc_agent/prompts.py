@@ -28,10 +28,9 @@ HUMAN_PROMPT = """ Here is the code file that need to be documented: \n\n
 #  code. Given the sensitive nature of the  task make sure you understand this.
 #  Otherwise severe penalties are going to be imposed upon us by customers.
 
-PROMPT = ChatPromptTemplate.from_messages([
-    ("system", SYSTEM_PROMPT),
-    ("human", HUMAN_PROMPT)
-])
+PROMPT = ChatPromptTemplate.from_messages(
+    [("system", SYSTEM_PROMPT), ("human", HUMAN_PROMPT)]
+)
 
 
 SYSTEM_PROMPT_SUMMARY = """You are playing the role of senior Google engineer.
@@ -50,15 +49,15 @@ SYSTEM_PROMPT_SUMMARY = """You are playing the role of senior Google engineer.
  few lines long and concise. Do not add any extra verbosity to the summary.
  This will break the downstream application if you do not follow the
  instruction properly. \n\n"""
+
 HUMAN_PROMPT_SUMMARY = """ Here is the code file that need to be summarized:
 \n\n
 {code_file}
 """
 
-PROMPT_SUMMARY = ChatPromptTemplate.from_messages([
-    ("system", SYSTEM_PROMPT_SUMMARY),
-    ("human", HUMAN_PROMPT_SUMMARY)
-])
+PROMPT_SUMMARY = ChatPromptTemplate.from_messages(
+    [("system", SYSTEM_PROMPT_SUMMARY), ("human", HUMAN_PROMPT_SUMMARY)]
+)
 
 
 SYSTEM_PROMPT_README = """You are playing the role of senior Google.
@@ -72,13 +71,14 @@ SYSTEM_PROMPT_README = """You are playing the role of senior Google.
  directory. The README.md file should clear and concise to give the
  understanding about directory/module in the codebase. The README.md file
  should be easy to read and understand. \n\n"""
+
 HUMAN_PROMPT_README = """ Here is the list of file/module names along with
  the short summary of the file/module: \n\n
 {file_module_summaries}
 \n\n Current directory/module name is:
 {module_name}
 """
-PROMPT_README = ChatPromptTemplate.from_messages([
-    ("system", SYSTEM_PROMPT_README),
-    ("human", HUMAN_PROMPT_README)
-])
+
+PROMPT_README = ChatPromptTemplate.from_messages(
+    [("system", SYSTEM_PROMPT_README), ("human", HUMAN_PROMPT_README)]
+)
