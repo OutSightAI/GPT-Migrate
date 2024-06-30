@@ -12,6 +12,7 @@ langchain-openai = "^0.1.8"
 langgraph = "^0.0.69"
 grandalf = "^0.8"
 black = "^24.4.2"
+aiosqlite = "^0.20.0"
 
 
 [build-system]

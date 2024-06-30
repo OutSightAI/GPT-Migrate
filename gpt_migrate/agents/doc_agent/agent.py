@@ -15,11 +15,18 @@ from gpt_migrate.agents.doc_agent.prompts import (
 
 
 class DocAgent(Agent):
-    def __init__(self, model, tools):
+    def __init__(self, model, tools, checkpointer=None, thread_id=None):
         super().__init__(model, tools)
         self.doc_chain = PROMPT | self.model
         self.summary_chain = PROMPT_SUMMARY | self.model
         self.readme_chain = PROMPT_README | self.model
+        self.thread_id = thread_id
+
+        self.config = {"recursion_limit": 1000}
+        if self.thread_id is not None:
+            self.config["configurable"] = {
+                "thread_id": self.thread_id
+            }
 
         # creating Agent graph
         graph = StateGraph(DocAgentState)
@@ -61,10 +68,10 @@ class DocAgent(Agent):
         )
 
         # compiling graph
-        self.graph = graph.compile()
+        self.graph = graph.compile(checkpointer=checkpointer)
 
     def __call__(self, state: DocAgentState):
-        return self.graph.invoke(state, config={"recursion_limit": 1000})
+        return self.graph.invoke(state, config=self.config)
 
     def process_directory_or_file(self, state: DocAgentState):
         if state["current_path"] is not None:
@@ -131,14 +138,14 @@ class DocAgent(Agent):
                     items_to_process = items + items_to_process
 
             if current_path is not None:
-                prefix = '├── ' if state["directory_stack"][-1]["count"] > 0 \
+                prefix = '├── ' if state["directory_stack"][-1]["count"] >= 0 \
                         else '└── '
 
                 state["directory_structure"] += state["indent"] + prefix + \
                     current_path + "/\n"
 
                 state["indent"] += "│   " if \
-                    state["directory_stack"][-1]["count"] > 0 else "    "
+                    state["directory_stack"][-1]["count"] >= 0 else "    "
 
         return {
             "items_to_process": items_to_process,
@@ -223,7 +230,7 @@ class DocAgent(Agent):
                 state["current_path"]
             message = code_file_summary
 
-        prefix = '├── ' if state["directory_stack"][-1]["count"] > 0 \
+        prefix = '├── ' if state["directory_stack"][-1]["count"] >= 0 \
             else '└── '
         state["directory_structure"] = state["directory_structure"] + \
             state["indent"] + prefix + state["current_path"] + "\n"
@@ -295,6 +302,19 @@ class DocAgent(Agent):
             readme.additional_kwargs["directory_path"] = state["entry_path"]
             readme.additional_kwargs["file_name"] = "README.md"
 
+        if len(state["items_to_process"]) == 0:
+            state["directory_structure"] += (
+                state["indent"] + "└── README.md\n"
+            )
+            state["indent"] = state["indent"][:-4]
+        else:
+            state["directory_structure"] += (
+                state["indent"] + "│   "
+                + "└── README.md\n"
+            )
+
         return {
-            "messages": [readme]
+            "messages": [readme],
+            "directory_structure": state["directory_structure"],
+            "indent": state["indent"]
         }
